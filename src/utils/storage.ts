@@ -8,12 +8,104 @@ const STORAGE_REWARDS_KEY = 'snpsu_jdsa_rewards_log_2026';
 const STORAGE_TEAMS_KEY = 'snpsu_jdsa_teams_2026';
 const STORAGE_META_KEY = 'snpsu_jdsa_meta_2026';
 const STORAGE_ADMIN_AUTH_KEY = 'snpsu_jdsa_admin_auth_2026';
+const STORAGE_ADMIN_CONFIG_KEY = 'snpsu_jdsa_admin_security_config';
+const STORAGE_ADMIN_ATTEMPTS_KEY = 'snpsu_jdsa_admin_attempts';
+const STORAGE_ADMIN_LOCKOUT_KEY = 'snpsu_jdsa_admin_lockout';
 
-// Hard-coded admin credentials per user mandate:
-export const HARDCODED_ADMIN = {
-  adminId: 'kapiladmin',
-  passcode: 'admin123',
-};
+// Cryptographic SHA-256 hashes of credentials (Plaintext is NEVER stored in repository)
+// Defaults: SHA-256 hashes for standard verified administration
+const DEFAULT_ADMIN_ID_HASH = '6a963e23e92228e4792cac765e088ce58e600e68233b8316a1159dc41d5077d2';
+const DEFAULT_PASSCODE_HASH = '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9';
+
+// Cryptographic SHA-256 hash calculation using Web Crypto API
+export async function computeHash(text: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(text);
+  if (typeof crypto !== 'undefined' && crypto.subtle) {
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
+  }
+  // Fallback hash calculation if crypto.subtle is unavailable
+  let hash = 0;
+  for (let i = 0; i < text.length; i++) {
+    const char = text.charCodeAt(i);
+    hash = (hash << 5) - hash + char;
+    hash |= 0;
+  }
+  return hash.toString(16);
+}
+
+export interface LockoutStatus {
+  isLocked: boolean;
+  remainingSeconds: number;
+  attemptsLeft: number;
+}
+
+export function getAdminLockoutStatus(): LockoutStatus {
+  try {
+    const lockoutUntilStr = localStorage.getItem(STORAGE_ADMIN_LOCKOUT_KEY);
+    const attempts = parseInt(localStorage.getItem(STORAGE_ADMIN_ATTEMPTS_KEY) || '0', 10);
+    const maxAttempts = 5;
+
+    if (lockoutUntilStr) {
+      const lockoutUntil = parseInt(lockoutUntilStr, 10);
+      const now = Date.now();
+      if (now < lockoutUntil) {
+        return {
+          isLocked: true,
+          remainingSeconds: Math.ceil((lockoutUntil - now) / 1000),
+          attemptsLeft: 0,
+        };
+      } else {
+        localStorage.removeItem(STORAGE_ADMIN_LOCKOUT_KEY);
+        localStorage.removeItem(STORAGE_ADMIN_ATTEMPTS_KEY);
+      }
+    }
+
+    return {
+      isLocked: false,
+      remainingSeconds: 0,
+      attemptsLeft: Math.max(0, maxAttempts - attempts),
+    };
+  } catch {
+    return { isLocked: false, remainingSeconds: 0, attemptsLeft: 5 };
+  }
+}
+
+export function recordFailedAdminAttempt(): LockoutStatus {
+  try {
+    const current = parseInt(localStorage.getItem(STORAGE_ADMIN_ATTEMPTS_KEY) || '0', 10) + 1;
+    localStorage.setItem(STORAGE_ADMIN_ATTEMPTS_KEY, current.toString());
+    const maxAttempts = 5;
+
+    if (current >= maxAttempts) {
+      // Lock for 3 minutes (180 seconds)
+      const lockoutTime = Date.now() + 180 * 1000;
+      localStorage.setItem(STORAGE_ADMIN_LOCKOUT_KEY, lockoutTime.toString());
+      return {
+        isLocked: true,
+        remainingSeconds: 180,
+        attemptsLeft: 0,
+      };
+    }
+
+    return {
+      isLocked: false,
+      remainingSeconds: 0,
+      attemptsLeft: maxAttempts - current,
+    };
+  } catch {
+    return { isLocked: false, remainingSeconds: 0, attemptsLeft: 4 };
+  }
+}
+
+export function resetAdminAttempts(): void {
+  try {
+    localStorage.removeItem(STORAGE_ADMIN_ATTEMPTS_KEY);
+    localStorage.removeItem(STORAGE_ADMIN_LOCKOUT_KEY);
+  } catch {}
+}
 
 // Real-time synchronization event
 export function notifyDataUpdated(): void {
@@ -31,17 +123,101 @@ export function isAdminAuthenticated(): boolean {
   }
 }
 
-export function loginAdmin(id: string, pass: string): boolean {
-  if (id.trim() === HARDCODED_ADMIN.adminId && pass.trim() === HARDCODED_ADMIN.passcode) {
+export async function loginAdmin(
+  id: string,
+  pass: string
+): Promise<{ success: boolean; error?: string }> {
+  const lockout = getAdminLockoutStatus();
+  if (lockout.isLocked) {
+    return {
+      success: false,
+      error: `Security Lockout Active: Too many failed attempts. Please wait ${lockout.remainingSeconds} seconds before retrying.`,
+    };
+  }
+
+  const cleanId = id.trim();
+  const cleanPass = pass.trim();
+
+  if (!cleanId || !cleanPass) {
+    return { success: false, error: 'Please enter both Admin ID and Passcode.' };
+  }
+
+  // Compute SHA-256 hashes securely
+  const idHash = await computeHash(cleanId);
+  const passHash = await computeHash(cleanPass);
+
+  // Check stored custom admin config if user changed it in dashboard
+  let validIdHash = DEFAULT_ADMIN_ID_HASH;
+  let validPassHash = DEFAULT_PASSCODE_HASH;
+
+  try {
+    const customConfigRaw = localStorage.getItem(STORAGE_ADMIN_CONFIG_KEY);
+    if (customConfigRaw) {
+      const customConfig = JSON.parse(customConfigRaw);
+      if (customConfig.idHash && customConfig.passHash) {
+        validIdHash = customConfig.idHash;
+        validPassHash = customConfig.passHash;
+      }
+    }
+  } catch {}
+
+  if (idHash === validIdHash && passHash === validPassHash) {
     try {
       sessionStorage.setItem(STORAGE_ADMIN_AUTH_KEY, 'true');
+      resetAdminAttempts();
       notifyDataUpdated();
-      return true;
+      return { success: true };
     } catch {
-      return true;
+      return { success: true };
     }
   }
-  return false;
+
+  // Failed attempt - increment lockout counter
+  const updatedStatus = recordFailedAdminAttempt();
+  if (updatedStatus.isLocked) {
+    return {
+      success: false,
+      error: `Security Lockout Activated: Too many consecutive failed attempts. Admin portal is locked for 180 seconds.`,
+    };
+  }
+
+  return {
+    success: false,
+    error: `Invalid Administrator Credentials. ${updatedStatus.attemptsLeft} attempt${
+      updatedStatus.attemptsLeft === 1 ? '' : 's'
+    } remaining before security lockout.`,
+  };
+}
+
+export async function updateAdminCredentials(newId: string, newPass: string): Promise<boolean> {
+  if (!newId.trim() || !newPass.trim()) return false;
+  try {
+    const idHash = await computeHash(newId.trim());
+    const passHash = await computeHash(newPass.trim());
+    localStorage.setItem(
+      STORAGE_ADMIN_CONFIG_KEY,
+      JSON.stringify({ idHash, passHash, updatedAt: new Date().toISOString() })
+    );
+    notifyDataUpdated();
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export function resetAdminCredentialsToDefault(): void {
+  try {
+    localStorage.removeItem(STORAGE_ADMIN_CONFIG_KEY);
+    notifyDataUpdated();
+  } catch {}
+}
+
+export function hasCustomAdminCredentials(): boolean {
+  try {
+    return !!localStorage.getItem(STORAGE_ADMIN_CONFIG_KEY);
+  } catch {
+    return false;
+  }
 }
 
 export function logoutAdmin(): void {

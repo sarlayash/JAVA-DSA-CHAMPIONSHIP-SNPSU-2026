@@ -2,5 +2,7 @@
   "name": "Java DSA Championship 2026 Certification Portal",
   "description": "World-class certificate issuance, rewards dashboard, and QR verification portal for India's 1st 13-Day Industry Oriented Java DSA Championship 2026 at Sapthgiri NPS University. Mentorship By Kapil.",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
 }

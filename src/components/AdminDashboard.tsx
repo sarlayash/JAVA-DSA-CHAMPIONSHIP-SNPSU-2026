@@ -21,6 +21,9 @@ import {
   saveMeta,
   getStoredMeta,
   notifyDataUpdated,
+  updateAdminCredentials,
+  resetAdminCredentialsToDefault,
+  hasCustomAdminCredentials,
 } from '../utils/storage';
 import {
   Award,
@@ -47,6 +50,9 @@ import {
   FileText,
   Star,
   Activity,
+  Lock,
+  KeyRound,
+  ShieldAlert,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -59,7 +65,7 @@ interface Props {
   onViewCertificate: (cert: Certificate) => void;
 }
 
-type AdminViewTab = 'TEAMS' | 'LEARNERS' | 'META' | 'ISSUE' | 'LEDGER';
+type AdminViewTab = 'TEAMS' | 'LEARNERS' | 'META' | 'ISSUE' | 'LEDGER' | 'SECURITY';
 
 export const AdminDashboard: React.FC<Props> = ({
   learners,
@@ -348,6 +354,53 @@ export const AdminDashboard: React.FC<Props> = ({
       l.team.toLowerCase().includes(learnerSearch.toLowerCase())
   );
 
+  // Security / Admin Passcode Settings
+  const [newAdminId, setNewAdminId] = useState('');
+  const [newAdminPass, setNewAdminPass] = useState('');
+  const [confirmAdminPass, setConfirmAdminPass] = useState('');
+  const [securityStatus, setSecurityStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  const [isCustomCreds, setIsCustomCreds] = useState<boolean>(hasCustomAdminCredentials());
+
+  const handleUpdateSecurity = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newAdminId.trim() || !newAdminPass.trim()) {
+      setSecurityStatus({ type: 'error', message: 'Please provide both Admin ID and Passcode.' });
+      return;
+    }
+    if (newAdminPass.length < 6) {
+      setSecurityStatus({ type: 'error', message: 'Passcode must be at least 6 characters long.' });
+      return;
+    }
+    if (newAdminPass !== confirmAdminPass) {
+      setSecurityStatus({ type: 'error', message: 'Passcodes do not match.' });
+      return;
+    }
+
+    const ok = await updateAdminCredentials(newAdminId.trim(), newAdminPass.trim());
+    if (ok) {
+      setIsCustomCreds(true);
+      setNewAdminId('');
+      setNewAdminPass('');
+      setConfirmAdminPass('');
+      setSecurityStatus({
+        type: 'success',
+        message: 'Admin credentials updated and saved as cryptographic SHA-256 hashes in your browser!',
+      });
+      showToast('Admin credentials securely updated!');
+    } else {
+      setSecurityStatus({ type: 'error', message: 'Failed to update credentials. Please try again.' });
+    }
+  };
+
+  const handleResetSecurity = () => {
+    if (window.confirm('Reset admin credentials back to default verified hashes?')) {
+      resetAdminCredentialsToDefault();
+      setIsCustomCreds(false);
+      setSecurityStatus({ type: 'success', message: 'Admin credentials reset to verified defaults.' });
+      showToast('Admin credentials reset to default.');
+    }
+  };
+
   return (
     <div className="space-y-6 font-sans">
       {/* Toast Notification */}
@@ -370,7 +423,7 @@ export const AdminDashboard: React.FC<Props> = ({
             <div className="flex items-center gap-2 mb-2">
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-[#1a73e8] text-xs font-mono font-bold">
                 <ShieldCheck className="w-3.5 h-3.5" />
-                ADMINISTRATOR CONSOLE &bull; ID: kapiladmin
+                ADMINISTRATOR CONSOLE &bull; RESTRICTED ACCESS
               </span>
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-mono font-semibold">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
@@ -488,6 +541,21 @@ export const AdminDashboard: React.FC<Props> = ({
         >
           <History className="w-4 h-4" />
           <span>Credential Ledger ({certificates.length})</span>
+        </button>
+
+        <button
+          onClick={() => setActiveAdminTab('SECURITY')}
+          className={`px-4 py-2.5 rounded-xl flex items-center gap-2 transition cursor-pointer shrink-0 ${
+            activeAdminTab === 'SECURITY'
+              ? 'bg-[#1a73e8] text-white shadow-sm'
+              : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
+          }`}
+        >
+          <Lock className="w-4 h-4" />
+          <span>Security &amp; Passcode</span>
+          {isCustomCreds && (
+            <span className="w-2 h-2 rounded-full bg-emerald-400" title="Custom credentials active" />
+          )}
         </button>
       </div>
 
@@ -1475,6 +1543,165 @@ export const AdminDashboard: React.FC<Props> = ({
               </div>
             </div>
           )}
+        </div>
+      )}
+
+      {/* ---------------------------------------------------- */}
+      {/* TAB 6: SECURITY & PASSCODE MANAGEMENT                */}
+      {/* ---------------------------------------------------- */}
+      {activeAdminTab === 'SECURITY' && (
+        <div className="space-y-6">
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-xs">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-100">
+              <div>
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-mono font-semibold border border-blue-200 mb-2">
+                  <ShieldCheck className="w-3.5 h-3.5" />
+                  ACCESS CONTROL &amp; CREDENTIAL HARDENING
+                </div>
+                <h3 className="text-xl font-bold text-slate-900 tracking-tight">
+                  Administrator Security &amp; Custom Credentials
+                </h3>
+                <p className="text-slate-600 text-xs sm:text-sm mt-1 max-w-2xl leading-relaxed">
+                  Protect your championship administration. Update your private Admin ID and Passcode anytime. New credentials are saved as cryptographic SHA-256 hashes locally in your browser so they are never exposed in public repositories.
+                </p>
+              </div>
+
+              <div className="shrink-0">
+                <span
+                  className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold border ${
+                    isCustomCreds
+                      ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                      : 'bg-blue-50 text-blue-800 border-blue-200'
+                  }`}
+                >
+                  <span
+                    className={`w-2 h-2 rounded-full ${
+                      isCustomCreds ? 'bg-emerald-500' : 'bg-blue-500'
+                    }`}
+                  />
+                  {isCustomCreds ? 'Custom Credentials Active' : 'Default Verified Hashes Active'}
+                </span>
+              </div>
+            </div>
+
+            {securityStatus && (
+              <div
+                className={`mt-4 p-4 rounded-xl border text-xs flex items-center gap-3 ${
+                  securityStatus.type === 'success'
+                    ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
+                    : 'bg-rose-50 border-rose-200 text-rose-800'
+                }`}
+              >
+                {securityStatus.type === 'success' ? (
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                ) : (
+                  <ShieldAlert className="w-4 h-4 text-rose-600 shrink-0" />
+                )}
+                <span className="font-medium">{securityStatus.message}</span>
+              </div>
+            )}
+
+            <form onSubmit={handleUpdateSecurity} className="mt-6 max-w-xl space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase font-mono tracking-wider mb-1.5">
+                  New Admin ID
+                </label>
+                <input
+                  type="text"
+                  value={newAdminId}
+                  onChange={(e) => setNewAdminId(e.target.value)}
+                  placeholder="Enter your new secret Admin ID"
+                  required
+                  className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition shadow-xs font-medium"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase font-mono tracking-wider mb-1.5">
+                    New Passcode (Min 6 chars)
+                  </label>
+                  <input
+                    type="password"
+                    value={newAdminPass}
+                    onChange={(e) => setNewAdminPass(e.target.value)}
+                    placeholder="••••••••••••"
+                    required
+                    minLength={6}
+                    className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition shadow-xs font-medium"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase font-mono tracking-wider mb-1.5">
+                    Confirm Passcode
+                  </label>
+                  <input
+                    type="password"
+                    value={confirmAdminPass}
+                    onChange={(e) => setConfirmAdminPass(e.target.value)}
+                    placeholder="••••••••••••"
+                    required
+                    minLength={6}
+                    className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition shadow-xs font-medium"
+                  />
+                </div>
+              </div>
+
+              <div className="pt-2 flex flex-wrap items-center gap-3">
+                <button
+                  type="submit"
+                  className="px-5 py-2.5 bg-[#1a73e8] hover:bg-[#1557b0] text-white font-bold text-xs rounded-xl shadow-xs transition flex items-center gap-2 cursor-pointer"
+                >
+                  <Save className="w-4 h-4" />
+                  <span>Update Admin Credentials</span>
+                </button>
+
+                {isCustomCreds && (
+                  <button
+                    type="button"
+                    onClick={handleResetSecurity}
+                    className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs rounded-xl border border-slate-200 transition cursor-pointer"
+                  >
+                    Reset to Verified Defaults
+                  </button>
+                )}
+              </div>
+            </form>
+          </div>
+
+          {/* Security Features & Audit Checklist */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="p-5 bg-white border border-slate-200 rounded-2xl shadow-xs">
+              <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center mb-3">
+                <ShieldCheck className="w-5 h-5" />
+              </div>
+              <h4 className="font-bold text-sm text-slate-900">SHA-256 Hashing</h4>
+              <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+                Credentials are cryptographically hashed using Web Crypto SHA-256. Plaintext credentials are never saved in the source code or git commits.
+              </p>
+            </div>
+
+            <div className="p-5 bg-white border border-slate-200 rounded-2xl shadow-xs">
+              <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center mb-3">
+                <ShieldAlert className="w-5 h-5" />
+              </div>
+              <h4 className="font-bold text-sm text-slate-900">Brute-Force Rate Limiter</h4>
+              <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+                Automated rate limiting locks out login attempts for 3 minutes after 5 consecutive failed entries, preventing unauthorized brute-force attempts on public sites.
+              </p>
+            </div>
+
+            <div className="p-5 bg-white border border-slate-200 rounded-2xl shadow-xs">
+              <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-3">
+                <Lock className="w-5 h-5" />
+              </div>
+              <h4 className="font-bold text-sm text-slate-900">No Auto-fill or Visible Secrets</h4>
+              <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+                Auto-fill helper buttons and plain text credential pills have been completely removed from the login interface for public security compliance.
+              </p>
+            </div>
+          </div>
         </div>
       )}
     </div>

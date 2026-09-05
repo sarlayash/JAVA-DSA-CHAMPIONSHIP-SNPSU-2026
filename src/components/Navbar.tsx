@@ -151,12 +151,12 @@ export const Navbar: React.FC<Props> = ({
               <div className="flex items-center gap-2">
                 <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-mono font-semibold">
                   <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                  <span>Admin: kapiladmin</span>
+                  <span>Admin Session Active</span>
                 </div>
                 <button
                   onClick={onLogoutAdmin}
                   title="Lock Admin and log out"
-                  className="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-rose-50 hover:text-rose-600 text-slate-600 border border-slate-200 text-xs font-medium flex items-center gap-1.5 transition"
+                  className="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-rose-50 hover:text-rose-600 text-slate-600 border border-slate-200 text-xs font-medium flex items-center gap-1.5 transition cursor-pointer"
                 >
                   <LogOut className="w-3.5 h-3.5" />
                   <span className="hidden sm:inline">Lock Admin</span>
