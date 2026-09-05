@@ -3,9 +3,12 @@ import {
   getStoredCertificates,
   getStoredLearners,
   getStoredRewards,
+  getStoredTeams,
+  getStoredMeta,
+  isAdminAuthenticated,
+  logoutAdmin,
 } from './utils/storage';
-import { TEAMS_DATA, CHAMPIONSHIP_META } from './data/championshipData';
-import { Certificate, Learner, IssuedReward } from './types';
+import { Certificate, Learner, IssuedReward, Team, ChampionshipMeta } from './types';
 import { Navbar, NavTab } from './components/Navbar';
 import { LearnerPortal } from './components/LearnerPortal';
 import { AdminDashboard } from './components/AdminDashboard';
@@ -13,6 +16,7 @@ import { LeaderboardView } from './components/LeaderboardView';
 import { HallOfFame } from './components/HallOfFame';
 import { VerifyView } from './components/VerifyView';
 import { CertificateModal } from './components/CertificateModal';
+import { AdminAuthModal } from './components/AdminAuthModal';
 import {
   ShieldCheck,
   Award,
@@ -23,22 +27,32 @@ import {
   Building2,
   Clock,
   CheckCircle,
+  Users,
 } from 'lucide-react';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<NavTab>('LEARNER');
   const [certificates, setCertificates] = useState<Certificate[]>([]);
   const [learners, setLearners] = useState<Learner[]>([]);
+  const [teams, setTeams] = useState<Team[]>([]);
+  const [meta, setMeta] = useState<ChampionshipMeta>(getStoredMeta());
   const [rewardsLog, setRewardsLog] = useState<IssuedReward[]>([]);
+
+  // Admin authentication state
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
 
   const [selectedCertificate, setSelectedCertificate] = useState<Certificate | null>(null);
   const [verifyPreloadId, setVerifyPreloadId] = useState<string>('');
 
-  // Initial load
+  // Initial load and reload function
   const reloadData = () => {
     setCertificates(getStoredCertificates());
     setLearners(getStoredLearners());
+    setTeams(getStoredTeams());
+    setMeta(getStoredMeta());
     setRewardsLog(getStoredRewards());
+    setIsAdmin(isAdminAuthenticated());
   };
 
   useEffect(() => {
@@ -59,8 +73,34 @@ export default function App() {
 
     handleHash();
     window.addEventListener('hashchange', handleHash);
-    return () => window.removeEventListener('hashchange', handleHash);
+
+    // Real-time synchronization event listener across all tabs & views!
+    const handleDataUpdated = () => {
+      reloadData();
+    };
+    window.addEventListener('jdsa_data_updated', handleDataUpdated);
+
+    return () => {
+      window.removeEventListener('hashchange', handleHash);
+      window.removeEventListener('jdsa_data_updated', handleDataUpdated);
+    };
   }, []);
+
+  // Admin Login success handler
+  const handleAdminLoginSuccess = () => {
+    setIsAdmin(true);
+    setIsAuthModalOpen(false);
+    setActiveTab('ADMIN');
+  };
+
+  // Admin Logout handler
+  const handleAdminLogout = () => {
+    logoutAdmin();
+    setIsAdmin(false);
+    if (activeTab === 'ADMIN') {
+      setActiveTab('LEARNER');
+    }
+  };
 
   // Jump to verify screen with specific ID
   const handleOpenVerify = (certId: string) => {
@@ -81,42 +121,50 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#050505] text-[#e0e0e0] flex flex-col font-sans selection:bg-blue-600 selection:text-white">
-      {/* Top Navigation */}
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans selection:bg-[#1a73e8] selection:text-white">
+      {/* Top Navigation Bar with locked/unlocked Admin status & Spectrum Ribbon */}
       <Navbar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         certificatesCount={certificates.length}
+        isAdmin={isAdmin}
+        onOpenAdminAuth={() => setIsAuthModalOpen(true)}
+        onLogoutAdmin={handleAdminLogout}
       />
 
-      {/* Enterprise Marquee / Announcement Ribbon */}
-      <div className="bg-[#0a0a0a] border-b border-white/5 px-4 py-2.5 text-xs font-mono">
+      {/* Enterprise Marquee / Announcement Ribbon (Microsoft & Google Clean Corporate Style) */}
+      <div className="bg-white border-b border-slate-200/80 px-4 py-2.5 text-xs font-mono shadow-2xs">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4 overflow-x-auto whitespace-nowrap">
-          <div className="flex items-center gap-2 text-white">
-            <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
-            <span className="font-bold tracking-tight text-xs uppercase text-white">
-              {CHAMPIONSHIP_META.title}
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-[#1a73e8] animate-pulse" />
+            <span className="font-extrabold tracking-tight text-xs uppercase text-slate-900">
+              {meta.title}
             </span>
           </div>
 
-          <div className="flex items-center gap-4 text-zinc-400 text-[11px]">
-            <span className="flex items-center gap-1.5 text-zinc-300">
-              <Clock className="w-3.5 h-3.5 text-blue-400" />
-              117 Hours
+          <div className="flex items-center gap-4 text-slate-600 text-[11px]">
+            <span className="flex items-center gap-1.5 font-semibold text-slate-800">
+              <Clock className="w-3.5 h-3.5 text-[#1a73e8]" />
+              {meta.totalHours} Hours
             </span>
-            <span className="text-zinc-700">&bull;</span>
-            <span className="flex items-center gap-1.5 text-zinc-300">
-              <Code2 className="w-3.5 h-3.5 text-blue-400" />
-              50 Minds
+            <span className="text-slate-300">&bull;</span>
+            <span className="flex items-center gap-1.5 font-semibold text-slate-800">
+              <Users className="w-3.5 h-3.5 text-[#ea4335]" />
+              {meta.totalMinds || 50} Minds
             </span>
-            <span className="text-zinc-700">&bull;</span>
-            <span className="flex items-center gap-1.5 text-zinc-300">
-              <Building2 className="w-3.5 h-3.5 text-indigo-400" />
+            <span className="text-slate-300">&bull;</span>
+            <span className="flex items-center gap-1.5 font-semibold text-slate-800">
+              <Code2 className="w-3.5 h-3.5 text-[#34a853]" />
+              1 Mission &bull; Building In Public
+            </span>
+            <span className="text-slate-300">&bull;</span>
+            <span className="flex items-center gap-1.5 font-semibold text-slate-800">
+              <Building2 className="w-3.5 h-3.5 text-[#1a73e8]" />
               Sapthgiri NPS University
             </span>
-            <span className="text-zinc-700">&bull;</span>
-            <span className="text-white font-semibold tracking-wide">
-              Mentorship By Kapil
+            <span className="text-slate-300">&bull;</span>
+            <span className="text-[#1a73e8] font-bold tracking-wide">
+              {meta.mentorship}
             </span>
           </div>
         </div>
@@ -128,9 +176,11 @@ export default function App() {
           <LearnerPortal
             learners={learners}
             certificates={certificates}
-            teams={TEAMS_DATA}
+            teams={teams}
             onSelectCertificate={(cert) => setSelectedCertificate(cert)}
             onSelectVerify={handleOpenVerify}
+            isAdmin={isAdmin}
+            onOpenAdminAuth={() => setIsAuthModalOpen(true)}
           />
         )}
 
@@ -138,7 +188,7 @@ export default function App() {
           <AdminDashboard
             learners={learners}
             certificates={certificates}
-            teams={TEAMS_DATA}
+            teams={teams}
             rewardsLog={rewardsLog}
             onRefreshData={reloadData}
             onViewCertificate={(cert) => setSelectedCertificate(cert)}
@@ -147,14 +197,18 @@ export default function App() {
 
         {activeTab === 'LEADERBOARD' && (
           <LeaderboardView
-            teams={TEAMS_DATA}
+            teams={teams}
             learners={learners}
             onSelectLearner={handleSelectLearnerByName}
           />
         )}
 
         {activeTab === 'HALL_OF_FAME' && (
-          <HallOfFame onSelectLearner={handleSelectLearnerByName} />
+          <HallOfFame
+            teams={teams}
+            meta={meta}
+            onSelectLearner={handleSelectLearnerByName}
+          />
         )}
 
         {activeTab === 'VERIFY' && (
@@ -166,6 +220,13 @@ export default function App() {
         )}
       </main>
 
+      {/* Admin Authentication Modal */}
+      <AdminAuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        onSuccess={handleAdminLoginSuccess}
+      />
+
       {/* Certificate Inspection & Download Modal */}
       <CertificateModal
         certificate={selectedCertificate}
@@ -173,46 +234,46 @@ export default function App() {
         onOpenVerify={handleOpenVerify}
       />
 
-      {/* Global Enterprise Footer (Sophisticated Dark theme with strict Mentorship By Kapil requirement) */}
-      <footer className="w-full bg-[#0a0a0a] border-t border-white/5 mt-auto py-8">
+      {/* Global Enterprise Footer (Strictly Mentorship By Kapil & No Signs Needed) */}
+      <footer className="w-full bg-white border-t border-slate-200 mt-auto py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4 pb-6 border-b border-white/5">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4 pb-6 border-b border-slate-100">
             <div>
-              <h4 className="text-sm font-bold text-white tracking-tight uppercase">
+              <h4 className="text-sm font-extrabold text-slate-900 tracking-tight uppercase">
                 Sapthgiri NPS University
               </h4>
-              <p className="text-xs text-zinc-400 font-mono mt-0.5">
+              <p className="text-xs text-slate-600 font-mono mt-0.5">
                 India's FIRST 13-DAY INDUSTRY ORIENTED JAVA DSA CHAMPIONSHIP 2026
               </p>
-              <p className="text-[11px] text-zinc-500 font-mono mt-0.5">
-                117 hours | 50 Minds | 1 Mission | Building In Public
+              <p className="text-[11px] text-slate-500 font-mono mt-0.5">
+                {meta.totalHours} hours | {meta.totalMinds || 50} Minds | 1 Mission | Building In Public
               </p>
             </div>
 
             <div className="text-center md:text-right">
-              <p className="text-sm font-bold text-white tracking-normal uppercase">
+              <p className="text-sm font-extrabold text-slate-900 tracking-normal uppercase">
                 Mentorship By Kapil
               </p>
-              <p className="text-xs text-blue-400 font-mono mt-0.5 font-medium">
+              <p className="text-xs text-[#1a73e8] font-mono mt-0.5 font-bold">
                 Lead Mentor &amp; Program Architect
               </p>
-              <p className="text-[11px] text-zinc-500 font-mono">
+              <p className="text-[11px] text-slate-500 font-mono">
                 No signatures needed &bull; Cryptographically QR Verified
               </p>
             </div>
           </div>
 
-          <div className="pt-6 flex flex-col sm:flex-row items-center justify-between text-[10px] text-zinc-500 font-mono uppercase tracking-widest gap-2">
+          <div className="pt-6 flex flex-col sm:flex-row items-center justify-between text-[10px] text-slate-500 font-mono uppercase tracking-widest gap-2">
             <p>
               &copy; {new Date().getFullYear()} Java DSA Championship &bull; Sapthgiri NPS University
             </p>
-            <div className="flex items-center gap-3 normal-case tracking-normal text-xs text-zinc-400">
-              <span className="flex items-center gap-1.5 text-emerald-400 font-mono text-[11px]">
-                <CheckCircle className="w-3.5 h-3.5" />
+            <div className="flex items-center gap-3 normal-case tracking-normal text-xs text-slate-600">
+              <span className="flex items-center gap-1.5 text-emerald-700 font-mono text-[11px] font-bold">
+                <CheckCircle className="w-3.5 h-3.5 text-emerald-600" />
                 QR Code Certified Ledger
               </span>
-              <span className="text-zinc-700">&bull;</span>
-              <span className="text-zinc-500 text-[11px] font-mono">FAANG &amp; Industry Verification Standard</span>
+              <span className="text-slate-300">&bull;</span>
+              <span className="text-slate-500 text-[11px] font-mono">FAANG &amp; Industry Verification Standard</span>
             </div>
           </div>
         </div>

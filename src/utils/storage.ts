@@ -1,10 +1,55 @@
-import { Certificate, Learner, IssuedReward, BadgeType, MedalLevel, CertificateType } from '../types';
-import { INITIAL_CERTIFICATES, LEARNERS_DATA } from '../data/championshipData';
+import { Certificate, Learner, IssuedReward, BadgeType, MedalLevel, CertificateType, Team, ChampionshipMeta } from '../types';
+import { INITIAL_CERTIFICATES, LEARNERS_DATA, TEAMS_DATA, CHAMPIONSHIP_META } from '../data/championshipData';
 import QRCode from 'qrcode';
 
 const STORAGE_CERTS_KEY = 'snpsu_jdsa_certificates_2026';
 const STORAGE_LEARNERS_KEY = 'snpsu_jdsa_learners_2026';
 const STORAGE_REWARDS_KEY = 'snpsu_jdsa_rewards_log_2026';
+const STORAGE_TEAMS_KEY = 'snpsu_jdsa_teams_2026';
+const STORAGE_META_KEY = 'snpsu_jdsa_meta_2026';
+const STORAGE_ADMIN_AUTH_KEY = 'snpsu_jdsa_admin_auth_2026';
+
+// Hard-coded admin credentials per user mandate:
+export const HARDCODED_ADMIN = {
+  adminId: 'kapiladmin',
+  passcode: 'admin123',
+};
+
+// Real-time synchronization event
+export function notifyDataUpdated(): void {
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('jdsa_data_updated'));
+  }
+}
+
+// Admin Authentication State
+export function isAdminAuthenticated(): boolean {
+  try {
+    return sessionStorage.getItem(STORAGE_ADMIN_AUTH_KEY) === 'true';
+  } catch {
+    return false;
+  }
+}
+
+export function loginAdmin(id: string, pass: string): boolean {
+  if (id.trim() === HARDCODED_ADMIN.adminId && pass.trim() === HARDCODED_ADMIN.passcode) {
+    try {
+      sessionStorage.setItem(STORAGE_ADMIN_AUTH_KEY, 'true');
+      notifyDataUpdated();
+      return true;
+    } catch {
+      return true;
+    }
+  }
+  return false;
+}
+
+export function logoutAdmin(): void {
+  try {
+    sessionStorage.removeItem(STORAGE_ADMIN_AUTH_KEY);
+    notifyDataUpdated();
+  } catch {}
+}
 
 export function getStoredCertificates(): Certificate[] {
   try {
@@ -23,9 +68,27 @@ export function getStoredCertificates(): Certificate[] {
 export function saveCertificates(certs: Certificate[]): void {
   try {
     localStorage.setItem(STORAGE_CERTS_KEY, JSON.stringify(certs));
+    notifyDataUpdated();
   } catch (e) {
     console.error('Failed to save certificates', e);
   }
+}
+
+export function updateCertificate(updatedCert: Certificate): void {
+  const current = getStoredCertificates();
+  const index = current.findIndex((c) => c.id === updatedCert.id);
+  if (index !== -1) {
+    current[index] = updatedCert;
+  } else {
+    current.unshift(updatedCert);
+  }
+  saveCertificates(current);
+}
+
+export function deleteCertificate(certId: string): void {
+  const current = getStoredCertificates();
+  const filtered = current.filter((c) => c.id !== certId);
+  saveCertificates(filtered);
 }
 
 export function getStoredLearners(): Learner[] {
@@ -45,8 +108,74 @@ export function getStoredLearners(): Learner[] {
 export function saveLearners(learners: Learner[]): void {
   try {
     localStorage.setItem(STORAGE_LEARNERS_KEY, JSON.stringify(learners));
+    notifyDataUpdated();
   } catch (e) {
     console.error('Failed to save learners', e);
+  }
+}
+
+export function updateLearner(updatedLearner: Learner): void {
+  const learners = getStoredLearners();
+  const idx = learners.findIndex((l) => l.id === updatedLearner.id);
+  if (idx !== -1) {
+    learners[idx] = updatedLearner;
+    saveLearners(learners);
+  }
+}
+
+export function getStoredTeams(): Team[] {
+  try {
+    const raw = localStorage.getItem(STORAGE_TEAMS_KEY);
+    if (!raw) {
+      localStorage.setItem(STORAGE_TEAMS_KEY, JSON.stringify(TEAMS_DATA));
+      return TEAMS_DATA;
+    }
+    return JSON.parse(raw);
+  } catch (e) {
+    console.error('Failed to load teams from storage', e);
+    return TEAMS_DATA;
+  }
+}
+
+export function saveTeams(teams: Team[]): void {
+  try {
+    localStorage.setItem(STORAGE_TEAMS_KEY, JSON.stringify(teams));
+    notifyDataUpdated();
+  } catch (e) {
+    console.error('Failed to save teams', e);
+  }
+}
+
+export function updateTeam(updatedTeam: Team): void {
+  const teams = getStoredTeams();
+  const idx = teams.findIndex((t) => t.name.toLowerCase() === updatedTeam.name.toLowerCase());
+  if (idx !== -1) {
+    teams[idx] = updatedTeam;
+    // Keep ranks sorted if needed
+    saveTeams(teams);
+  }
+}
+
+export function getStoredMeta(): ChampionshipMeta {
+  try {
+    const raw = localStorage.getItem(STORAGE_META_KEY);
+    if (!raw) {
+      localStorage.setItem(STORAGE_META_KEY, JSON.stringify(CHAMPIONSHIP_META));
+      return CHAMPIONSHIP_META;
+    }
+    return { ...CHAMPIONSHIP_META, ...JSON.parse(raw) };
+  } catch (e) {
+    console.error('Failed to load meta from storage', e);
+    return CHAMPIONSHIP_META;
+  }
+}
+
+export function saveMeta(meta: ChampionshipMeta): void {
+  try {
+    localStorage.setItem(STORAGE_META_KEY, JSON.stringify(meta));
+    notifyDataUpdated();
+  } catch (e) {
+    console.error('Failed to save meta', e);
   }
 }
 
@@ -65,6 +194,7 @@ export function logIssuedReward(reward: IssuedReward): void {
     const current = getStoredRewards();
     const updated = [reward, ...current];
     localStorage.setItem(STORAGE_REWARDS_KEY, JSON.stringify(updated));
+    notifyDataUpdated();
   } catch (e) {
     console.error('Failed to log reward', e);
   }

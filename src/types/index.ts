@@ -90,3 +90,17 @@ export interface IssuedReward {
   issuedAt: string;
   issuedBy: string;
 }
+
+export interface ChampionshipMeta {
+  title: string;
+  tagline: string;
+  institution: string;
+  poweredBy: string;
+  mentorship: string;
+  motto: string;
+  vision: string;
+  totalHours: number;
+  totalDays: number;
+  year: string;
+  totalMinds?: number;
+}
