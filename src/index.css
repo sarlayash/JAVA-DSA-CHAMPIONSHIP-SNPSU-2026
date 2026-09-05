@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+@media print {
+  body {
+    background: #020617 !important;
+    color: #ffffff !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  header, footer, nav, button {
+    display: none !important;
+  }
+  #faang-certificate-render {
+    margin: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    border: none !important;
+    box-shadow: none !important;
+    page-break-inside: avoid !important;
+  }
+}
