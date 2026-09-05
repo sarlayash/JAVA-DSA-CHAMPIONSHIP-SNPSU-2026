@@ -220,22 +220,22 @@ export const CertificateModal: React.FC<Props> = ({ certificate, onClose, onOpen
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-950/80 backdrop-blur-md overflow-y-auto">
-      <div className="relative w-full max-w-5xl bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-4 sm:p-6 my-8">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/85 backdrop-blur-md overflow-y-auto">
+      <div className="relative w-full max-w-5xl bg-[#0a0a0a] border border-white/10 rounded-xl shadow-2xl p-4 sm:p-6 my-8">
         {/* Top Actions Bar */}
-        <div className="flex items-center justify-between border-b border-slate-800 pb-4 mb-4">
-          <div className="flex items-center space-x-2">
-            <span className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+        <div className="flex items-center justify-between border-b border-white/5 pb-4 mb-4">
+          <div className="flex items-center space-x-2.5">
+            <span className="p-1.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20">
               <ShieldCheck className="w-5 h-5" />
             </span>
             <div>
               <h2 className="text-base sm:text-lg font-bold text-white flex items-center gap-2">
                 Official Credential Viewer
-                <span className="text-xs px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-mono">
+                <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-mono border border-emerald-500/20">
                   QR VERIFIED
                 </span>
               </h2>
-              <p className="text-xs text-slate-400 font-mono">
+              <p className="text-xs text-gray-400 font-mono">
                 {certificate.id} &bull; {certificate.recipientName}
               </p>
             </div>
@@ -244,7 +244,7 @@ export const CertificateModal: React.FC<Props> = ({ certificate, onClose, onOpen
           <div className="flex items-center gap-2">
             <button
               onClick={handleCopyLink}
-              className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium border border-slate-700 flex items-center gap-1.5 transition"
+              className="px-3 py-1.5 rounded bg-white/5 hover:bg-white/10 text-white text-xs font-medium border border-white/10 flex items-center gap-1.5 transition-all"
               title="Copy verification link"
             >
               {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Share2 className="w-3.5 h-3.5" />}
@@ -253,7 +253,7 @@ export const CertificateModal: React.FC<Props> = ({ certificate, onClose, onOpen
 
             <button
               onClick={handlePrint}
-              className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium border border-slate-700 flex items-center gap-1.5 transition"
+              className="px-3 py-1.5 rounded bg-white/5 hover:bg-white/10 text-white text-xs font-medium border border-white/10 flex items-center gap-1.5 transition-all"
               title="Print Certificate"
             >
               <Printer className="w-3.5 h-3.5" />
@@ -263,7 +263,7 @@ export const CertificateModal: React.FC<Props> = ({ certificate, onClose, onOpen
             <button
               onClick={handleDownloadImage}
               disabled={downloading}
-              className="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-xs flex items-center gap-1.5 transition shadow"
+              className="px-4 py-1.5 rounded bg-white text-black hover:bg-gray-200 font-bold text-xs flex items-center gap-1.5 transition-all shadow"
               title="Download High-Res PNG"
             >
               <Download className="w-3.5 h-3.5" />
@@ -272,7 +272,7 @@ export const CertificateModal: React.FC<Props> = ({ certificate, onClose, onOpen
 
             <button
               onClick={onClose}
-              className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition ml-2"
+              className="p-1.5 rounded bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition ml-1"
               title="Close modal"
             >
               <X className="w-5 h-5" />
@@ -281,7 +281,7 @@ export const CertificateModal: React.FC<Props> = ({ certificate, onClose, onOpen
         </div>
 
         {/* Certificate Display Container */}
-        <div className="bg-slate-950/60 p-2 sm:p-4 rounded-xl border border-slate-800/60 overflow-x-auto flex justify-center">
+        <div className="bg-[#050505] p-2 sm:p-4 rounded-lg border border-white/5 overflow-x-auto flex justify-center">
           <FAANGCertificate
             certificate={certificate}
             onVerifyClick={() => onOpenVerify(certificate.id)}
@@ -289,22 +289,22 @@ export const CertificateModal: React.FC<Props> = ({ certificate, onClose, onOpen
         </div>
 
         {/* Credential Attributes & Security Verification Info */}
-        <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3 pt-3 border-t border-slate-800 text-xs">
-          <div className="p-3 bg-slate-950/50 rounded-lg border border-slate-800">
-            <p className="text-slate-400 font-mono text-[11px] mb-1">PROGRAM CREDENTIAL</p>
-            <p className="font-semibold text-slate-200">13-Day Java DSA Championship 2026</p>
-            <p className="text-slate-400 text-[11px] mt-0.5">117 Hours Continuous Mentorship</p>
+        <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3 pt-3 border-t border-white/5 text-xs">
+          <div className="p-3 bg-[#050505] rounded-lg border border-white/5">
+            <p className="text-gray-500 font-mono text-[10px] uppercase font-bold mb-1">PROGRAM CREDENTIAL</p>
+            <p className="font-semibold text-white">13-Day Java DSA Championship 2026</p>
+            <p className="text-gray-400 text-[11px] mt-0.5">117 Hours Continuous Mentorship</p>
           </div>
 
-          <div className="p-3 bg-slate-950/50 rounded-lg border border-slate-800">
-            <p className="text-slate-400 font-mono text-[11px] mb-1">ISSUING AUTHORITY</p>
-            <p className="font-semibold text-slate-200">Sapthgiri NPS University</p>
-            <p className="text-amber-400 text-[11px] font-medium mt-0.5">Mentorship By Kapil</p>
+          <div className="p-3 bg-[#050505] rounded-lg border border-white/5">
+            <p className="text-gray-500 font-mono text-[10px] uppercase font-bold mb-1">ISSUING AUTHORITY</p>
+            <p className="font-semibold text-white">Sapthgiri NPS University</p>
+            <p className="text-blue-400 text-[11px] font-semibold mt-0.5">Mentorship By Kapil</p>
           </div>
 
-          <div className="p-3 bg-slate-950/50 rounded-lg border border-slate-800 flex items-center justify-between">
+          <div className="p-3 bg-[#050505] rounded-lg border border-white/5 flex items-center justify-between">
             <div>
-              <p className="text-slate-400 font-mono text-[11px] mb-1">SECURITY &amp; QR VERIFY</p>
+              <p className="text-gray-500 font-mono text-[10px] uppercase font-bold mb-1">SECURITY &amp; QR VERIFY</p>
               <p className="text-emerald-400 font-mono font-medium flex items-center gap-1">
                 <ShieldCheck className="w-3.5 h-3.5" />
                 100% Cryptographically Verified
@@ -312,7 +312,7 @@ export const CertificateModal: React.FC<Props> = ({ certificate, onClose, onOpen
             </div>
             <button
               onClick={() => onOpenVerify(certificate.id)}
-              className="px-2.5 py-1.5 rounded bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 font-mono text-[11px] border border-emerald-500/30 transition flex items-center gap-1"
+              className="px-2.5 py-1.5 rounded bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 font-mono text-[11px] border border-emerald-500/30 transition flex items-center gap-1"
             >
               <QrCode className="w-3.5 h-3.5" />
               Verify

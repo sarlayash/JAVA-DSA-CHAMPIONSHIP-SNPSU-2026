@@ -19,42 +19,40 @@ interface Props {
 
 export const Navbar: React.FC<Props> = ({ activeTab, setActiveTab, certificatesCount }) => {
   return (
-    <header className="sticky top-0 z-40 w-full bg-slate-950/80 backdrop-blur-md border-b border-slate-800">
+    <header className="sticky top-0 z-40 w-full bg-[#0a0a0a] border-b border-white/5">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 gap-4">
-          {/* Logo / Brand */}
+          {/* Logo / Brand per Sophisticated Dark specification */}
           <div
             onClick={() => setActiveTab('LEARNER')}
             className="flex items-center gap-3 cursor-pointer group"
           >
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 via-amber-600 to-yellow-400 p-[1px] shadow-lg shadow-amber-500/10">
-              <div className="w-full h-full bg-slate-950 rounded-[11px] flex items-center justify-center text-amber-400 font-bold font-serif text-sm">
-                JDSA
-              </div>
+            <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-700 rounded flex items-center justify-center font-bold text-white text-sm shadow-sm">
+              J
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-sm font-bold text-white tracking-wide group-hover:text-amber-400 transition">
-                  Java DSA Championship
+                <span className="font-semibold tracking-tight text-white text-sm sm:text-base">
+                  CHAMPIONSHIP PORTAL <span className="text-blue-500">2026</span>
                 </span>
-                <span className="hidden sm:inline-block px-2 py-0.5 rounded text-[10px] font-mono bg-amber-500/10 text-amber-400 border border-amber-500/30">
-                  2026
+                <span className="hidden sm:inline-block px-2 py-0.5 rounded text-[10px] font-mono bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                  Sapthgiri NPS
                 </span>
               </div>
-              <p className="text-[11px] text-slate-400 font-mono tracking-tight">
-                Sapthgiri NPS University &bull; Mentorship By Kapil
+              <p className="text-[11px] text-gray-400 font-mono tracking-tight">
+                Mentorship By Kapil &bull; Official Credential Registry
               </p>
             </div>
           </div>
 
           {/* Navigation Tabs */}
-          <nav className="hidden md:flex items-center gap-1 bg-slate-900/90 p-1 rounded-xl border border-slate-800 text-xs font-medium">
+          <nav className="hidden md:flex items-center gap-1 bg-[#050505] p-1 rounded-lg border border-white/10 text-xs font-medium">
             <button
               onClick={() => setActiveTab('LEARNER')}
-              className={`px-3.5 py-1.5 rounded-lg flex items-center gap-1.5 transition ${
+              className={`px-3.5 py-1.5 rounded-md flex items-center gap-1.5 transition-colors ${
                 activeTab === 'LEARNER'
-                  ? 'bg-amber-500 text-slate-950 font-bold shadow'
-                  : 'text-slate-300 hover:text-white hover:bg-slate-800'
+                  ? 'bg-blue-600 text-white font-semibold shadow-sm'
+                  : 'text-gray-400 hover:text-white hover:bg-white/5'
               }`}
             >
               <Award className="w-3.5 h-3.5" />
@@ -63,10 +61,10 @@ export const Navbar: React.FC<Props> = ({ activeTab, setActiveTab, certificatesC
 
             <button
               onClick={() => setActiveTab('ADMIN')}
-              className={`px-3.5 py-1.5 rounded-lg flex items-center gap-1.5 transition ${
+              className={`px-3.5 py-1.5 rounded-md flex items-center gap-1.5 transition-colors ${
                 activeTab === 'ADMIN'
-                  ? 'bg-amber-500 text-slate-950 font-bold shadow'
-                  : 'text-slate-300 hover:text-white hover:bg-slate-800'
+                  ? 'bg-blue-600 text-white font-semibold shadow-sm'
+                  : 'text-gray-400 hover:text-white hover:bg-white/5'
               }`}
             >
               <LayoutDashboard className="w-3.5 h-3.5" />
@@ -75,10 +73,10 @@ export const Navbar: React.FC<Props> = ({ activeTab, setActiveTab, certificatesC
 
             <button
               onClick={() => setActiveTab('LEADERBOARD')}
-              className={`px-3.5 py-1.5 rounded-lg flex items-center gap-1.5 transition ${
+              className={`px-3.5 py-1.5 rounded-md flex items-center gap-1.5 transition-colors ${
                 activeTab === 'LEADERBOARD'
-                  ? 'bg-amber-500 text-slate-950 font-bold shadow'
-                  : 'text-slate-300 hover:text-white hover:bg-slate-800'
+                  ? 'bg-blue-600 text-white font-semibold shadow-sm'
+                  : 'text-gray-400 hover:text-white hover:bg-white/5'
               }`}
             >
               <Trophy className="w-3.5 h-3.5" />
@@ -87,10 +85,10 @@ export const Navbar: React.FC<Props> = ({ activeTab, setActiveTab, certificatesC
 
             <button
               onClick={() => setActiveTab('HALL_OF_FAME')}
-              className={`px-3.5 py-1.5 rounded-lg flex items-center gap-1.5 transition ${
+              className={`px-3.5 py-1.5 rounded-md flex items-center gap-1.5 transition-colors ${
                 activeTab === 'HALL_OF_FAME'
-                  ? 'bg-amber-500 text-slate-950 font-bold shadow'
-                  : 'text-slate-300 hover:text-white hover:bg-slate-800'
+                  ? 'bg-blue-600 text-white font-semibold shadow-sm'
+                  : 'text-gray-400 hover:text-white hover:bg-white/5'
               }`}
             >
               <Sparkles className="w-3.5 h-3.5" />
@@ -99,10 +97,10 @@ export const Navbar: React.FC<Props> = ({ activeTab, setActiveTab, certificatesC
 
             <button
               onClick={() => setActiveTab('VERIFY')}
-              className={`px-3.5 py-1.5 rounded-lg flex items-center gap-1.5 transition ${
+              className={`px-3.5 py-1.5 rounded-md flex items-center gap-1.5 transition-colors ${
                 activeTab === 'VERIFY'
-                  ? 'bg-emerald-500 text-slate-950 font-bold shadow'
-                  : 'text-emerald-400 hover:text-emerald-300 hover:bg-slate-800'
+                  ? 'bg-white/10 text-emerald-400 border border-emerald-500/30 font-semibold'
+                  : 'text-gray-400 hover:text-emerald-400 hover:bg-white/5'
               }`}
             >
               <ShieldCheck className="w-3.5 h-3.5" />
@@ -110,32 +108,32 @@ export const Navbar: React.FC<Props> = ({ activeTab, setActiveTab, certificatesC
             </button>
           </nav>
 
-          {/* Right Action: QR Scan Quick Action */}
+          {/* Right Action: QR Scan & Issue Certificate Quick Action */}
           <div className="flex items-center gap-2">
             <button
               onClick={() => setActiveTab('VERIFY')}
-              className="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-xs text-slate-200 flex items-center gap-1.5 transition"
+              className="px-3 py-1.5 rounded bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-medium text-white flex items-center gap-1.5 transition-all"
             >
-              <QrCode className="w-3.5 h-3.5 text-emerald-400" />
-              <span className="hidden sm:inline font-mono">Scan QR</span>
+              <QrCode className="w-3.5 h-3.5 text-blue-400" />
+              <span className="hidden sm:inline font-mono">Verify QR</span>
             </button>
 
             <button
               onClick={() => setActiveTab('ADMIN')}
-              className="px-3.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs flex items-center gap-1.5 transition shadow"
+              className="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded transition-colors flex items-center gap-1.5 shadow-sm"
             >
-              <span className="hidden sm:inline">Issue Reward</span>
+              <span className="hidden sm:inline">Issue Certificate</span>
               <span className="sm:hidden">Issue</span>
             </button>
           </div>
         </div>
 
         {/* Mobile Navigation bar */}
-        <div className="flex md:hidden items-center justify-between py-2 border-t border-slate-800 text-xs font-mono overflow-x-auto gap-1">
+        <div className="flex md:hidden items-center justify-between py-2 border-t border-white/5 text-xs font-mono overflow-x-auto gap-1">
           <button
             onClick={() => setActiveTab('LEARNER')}
             className={`px-2.5 py-1 rounded ${
-              activeTab === 'LEARNER' ? 'bg-amber-500 text-slate-950 font-bold' : 'text-slate-400'
+              activeTab === 'LEARNER' ? 'bg-blue-600 text-white font-bold' : 'text-gray-400'
             }`}
           >
             Learners
@@ -143,7 +141,7 @@ export const Navbar: React.FC<Props> = ({ activeTab, setActiveTab, certificatesC
           <button
             onClick={() => setActiveTab('ADMIN')}
             className={`px-2.5 py-1 rounded ${
-              activeTab === 'ADMIN' ? 'bg-amber-500 text-slate-950 font-bold' : 'text-slate-400'
+              activeTab === 'ADMIN' ? 'bg-blue-600 text-white font-bold' : 'text-gray-400'
             }`}
           >
             Admin
@@ -151,7 +149,7 @@ export const Navbar: React.FC<Props> = ({ activeTab, setActiveTab, certificatesC
           <button
             onClick={() => setActiveTab('LEADERBOARD')}
             className={`px-2.5 py-1 rounded ${
-              activeTab === 'LEADERBOARD' ? 'bg-amber-500 text-slate-950 font-bold' : 'text-slate-400'
+              activeTab === 'LEADERBOARD' ? 'bg-blue-600 text-white font-bold' : 'text-gray-400'
             }`}
           >
             Points
@@ -159,7 +157,7 @@ export const Navbar: React.FC<Props> = ({ activeTab, setActiveTab, certificatesC
           <button
             onClick={() => setActiveTab('HALL_OF_FAME')}
             className={`px-2.5 py-1 rounded ${
-              activeTab === 'HALL_OF_FAME' ? 'bg-amber-500 text-slate-950 font-bold' : 'text-slate-400'
+              activeTab === 'HALL_OF_FAME' ? 'bg-blue-600 text-white font-bold' : 'text-gray-400'
             }`}
           >
             Hall of Fame
@@ -167,7 +165,7 @@ export const Navbar: React.FC<Props> = ({ activeTab, setActiveTab, certificatesC
           <button
             onClick={() => setActiveTab('VERIFY')}
             className={`px-2.5 py-1 rounded ${
-              activeTab === 'VERIFY' ? 'bg-emerald-500 text-slate-950 font-bold' : 'text-emerald-400'
+              activeTab === 'VERIFY' ? 'bg-white/10 text-emerald-400' : 'text-gray-400'
             }`}
           >
             Verify

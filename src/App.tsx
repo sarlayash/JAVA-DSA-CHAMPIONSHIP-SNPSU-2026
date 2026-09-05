@@ -81,7 +81,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-amber-500 selection:text-slate-950">
+    <div className="min-h-screen bg-[#050505] text-[#e0e0e0] flex flex-col font-sans selection:bg-blue-600 selection:text-white">
       {/* Top Navigation */}
       <Navbar
         activeTab={activeTab}
@@ -90,30 +90,32 @@ export default function App() {
       />
 
       {/* Enterprise Marquee / Announcement Ribbon */}
-      <div className="bg-slate-900 border-b border-slate-800/80 px-4 py-2 text-xs font-mono">
+      <div className="bg-[#0a0a0a] border-b border-white/5 px-4 py-2.5 text-xs font-mono">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4 overflow-x-auto whitespace-nowrap">
-          <div className="flex items-center gap-2 text-amber-400">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="font-bold">{CHAMPIONSHIP_META.title}</span>
+          <div className="flex items-center gap-2 text-white">
+            <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+            <span className="font-bold tracking-tight text-xs uppercase text-white">
+              {CHAMPIONSHIP_META.title}
+            </span>
           </div>
 
-          <div className="flex items-center gap-4 text-slate-400 text-[11px]">
-            <span className="flex items-center gap-1">
-              <Clock className="w-3.5 h-3.5 text-amber-400" />
+          <div className="flex items-center gap-4 text-zinc-400 text-[11px]">
+            <span className="flex items-center gap-1.5 text-zinc-300">
+              <Clock className="w-3.5 h-3.5 text-blue-400" />
               117 Hours
             </span>
-            <span>&bull;</span>
-            <span className="flex items-center gap-1">
+            <span className="text-zinc-700">&bull;</span>
+            <span className="flex items-center gap-1.5 text-zinc-300">
               <Code2 className="w-3.5 h-3.5 text-blue-400" />
               50 Minds
             </span>
-            <span>&bull;</span>
-            <span className="flex items-center gap-1">
+            <span className="text-zinc-700">&bull;</span>
+            <span className="flex items-center gap-1.5 text-zinc-300">
               <Building2 className="w-3.5 h-3.5 text-indigo-400" />
               Sapthgiri NPS University
             </span>
-            <span>&bull;</span>
-            <span className="text-amber-300 font-semibold">
+            <span className="text-zinc-700">&bull;</span>
+            <span className="text-white font-semibold tracking-wide">
               Mentorship By Kapil
             </span>
           </div>
@@ -171,46 +173,46 @@ export default function App() {
         onOpenVerify={handleOpenVerify}
       />
 
-      {/* Global Enterprise Footer (Strictly complying with prompt requirement) */}
-      <footer className="w-full bg-slate-950 border-t border-slate-900 mt-auto py-8">
+      {/* Global Enterprise Footer (Sophisticated Dark theme with strict Mentorship By Kapil requirement) */}
+      <footer className="w-full bg-[#0a0a0a] border-t border-white/5 mt-auto py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4 pb-6 border-b border-slate-900">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4 pb-6 border-b border-white/5">
             <div>
-              <h4 className="text-sm font-bold text-white tracking-wide">
+              <h4 className="text-sm font-bold text-white tracking-tight uppercase">
                 Sapthgiri NPS University
               </h4>
-              <p className="text-xs text-slate-400 font-mono mt-0.5">
+              <p className="text-xs text-zinc-400 font-mono mt-0.5">
                 India's FIRST 13-DAY INDUSTRY ORIENTED JAVA DSA CHAMPIONSHIP 2026
               </p>
-              <p className="text-[11px] text-slate-500 font-mono mt-0.5">
+              <p className="text-[11px] text-zinc-500 font-mono mt-0.5">
                 117 hours | 50 Minds | 1 Mission | Building In Public
               </p>
             </div>
 
             <div className="text-center md:text-right">
-              <p className="text-sm font-bold text-amber-400 uppercase tracking-wide">
+              <p className="text-sm font-bold text-white tracking-normal uppercase">
                 Mentorship By Kapil
               </p>
-              <p className="text-xs text-slate-400 font-mono mt-0.5">
+              <p className="text-xs text-blue-400 font-mono mt-0.5 font-medium">
                 Lead Mentor &amp; Program Architect
               </p>
-              <p className="text-[11px] text-slate-500 font-mono">
+              <p className="text-[11px] text-zinc-500 font-mono">
                 No signatures needed &bull; Cryptographically QR Verified
               </p>
             </div>
           </div>
 
-          <div className="pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 font-mono gap-2">
+          <div className="pt-6 flex flex-col sm:flex-row items-center justify-between text-[10px] text-zinc-500 font-mono uppercase tracking-widest gap-2">
             <p>
-              &copy; {new Date().getFullYear()} Sapthgiri NPS University. All rights reserved.
+              &copy; {new Date().getFullYear()} Java DSA Championship &bull; Sapthgiri NPS University
             </p>
-            <div className="flex items-center gap-4">
-              <span className="flex items-center gap-1 text-emerald-400">
+            <div className="flex items-center gap-3 normal-case tracking-normal text-xs text-zinc-400">
+              <span className="flex items-center gap-1.5 text-emerald-400 font-mono text-[11px]">
                 <CheckCircle className="w-3.5 h-3.5" />
                 QR Code Certified Ledger
               </span>
-              <span>&bull;</span>
-              <span>Fortune 500 &amp; FAANG Verification Standard</span>
+              <span className="text-zinc-700">&bull;</span>
+              <span className="text-zinc-500 text-[11px] font-mono">FAANG &amp; Industry Verification Standard</span>
             </div>
           </div>
         </div>
