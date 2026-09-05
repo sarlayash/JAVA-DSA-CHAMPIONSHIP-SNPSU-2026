@@ -227,7 +227,25 @@ export function logoutAdmin(): void {
   } catch {}
 }
 
+const STORAGE_DATA_VERSION_KEY = 'snpsu_jdsa_data_version_2026';
+const CURRENT_DATA_VERSION = 'v2_final_scores_2026';
+
+function ensureLatestDataLoaded(): void {
+  try {
+    const storedVer = localStorage.getItem(STORAGE_DATA_VERSION_KEY);
+    if (storedVer !== CURRENT_DATA_VERSION) {
+      localStorage.setItem(STORAGE_TEAMS_KEY, JSON.stringify(TEAMS_DATA));
+      localStorage.setItem(STORAGE_LEARNERS_KEY, JSON.stringify(LEARNERS_DATA));
+      localStorage.setItem(STORAGE_CERTS_KEY, JSON.stringify(INITIAL_CERTIFICATES));
+      localStorage.setItem(STORAGE_DATA_VERSION_KEY, CURRENT_DATA_VERSION);
+    }
+  } catch (e) {
+    console.error('Failed to sync storage version', e);
+  }
+}
+
 export function getStoredCertificates(): Certificate[] {
+  ensureLatestDataLoaded();
   try {
     const raw = localStorage.getItem(STORAGE_CERTS_KEY);
     if (!raw) {
@@ -268,6 +286,7 @@ export function deleteCertificate(certId: string): void {
 }
 
 export function getStoredLearners(): Learner[] {
+  ensureLatestDataLoaded();
   try {
     const raw = localStorage.getItem(STORAGE_LEARNERS_KEY);
     if (!raw) {
@@ -300,6 +319,7 @@ export function updateLearner(updatedLearner: Learner): void {
 }
 
 export function getStoredTeams(): Team[] {
+  ensureLatestDataLoaded();
   try {
     const raw = localStorage.getItem(STORAGE_TEAMS_KEY);
     if (!raw) {

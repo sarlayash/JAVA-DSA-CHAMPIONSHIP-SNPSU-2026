@@ -136,10 +136,18 @@ export const LeaderboardView: React.FC<Props> = ({ teams, learners, onSelectLear
                       </div>
 
                       <div className="text-right">
-                        <p className="text-base sm:text-lg font-extrabold text-slate-900 font-mono">
-                          {team.totalPoints.toLocaleString()}
-                        </p>
-                        <p className="text-[11px] text-slate-500 font-mono">
+                        <div className="flex items-baseline justify-end gap-1.5">
+                          <span className="text-[10px] font-mono font-bold text-slate-500 uppercase">FINAL:</span>
+                          <p className="text-base sm:text-lg font-extrabold text-slate-900 font-mono">
+                            {team.totalPoints.toLocaleString()}
+                          </p>
+                        </div>
+                        {team.basePoints !== undefined && (
+                          <p className="text-[11px] text-slate-500 font-mono">
+                            Total Points: {team.basePoints.toLocaleString()}
+                          </p>
+                        )}
+                        <p className="text-[10px] text-slate-500 font-mono">
                           {team.members.length} Members &bull; {team.demos ?? 0} Demos
                         </p>
                       </div>
@@ -180,10 +188,15 @@ export const LeaderboardView: React.FC<Props> = ({ teams, learners, onSelectLear
                     </h2>
                   </div>
                   <div className="p-2.5 bg-slate-50 rounded-xl border border-slate-200 text-right">
-                    <p className="text-[10px] text-slate-500 uppercase font-mono font-bold">Total</p>
+                    <p className="text-[10px] text-slate-500 uppercase font-mono font-bold">Final Points</p>
                     <p className="font-mono font-bold text-[#1a73e8] text-sm">
                       {selectedTeam.totalPoints.toLocaleString()}
                     </p>
+                    {selectedTeam.basePoints !== undefined && (
+                      <p className="text-[10px] text-slate-500 font-mono">
+                        Total: {selectedTeam.basePoints.toLocaleString()}
+                      </p>
+                    )}
                   </div>
                 </div>
 

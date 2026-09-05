@@ -53,6 +53,8 @@ export interface Learner {
 export interface Team {
   name: string;
   totalPoints: number;
+  finalPoints?: number;
+  basePoints?: number;
   rank: number;
   award: string;
   members: string[];
