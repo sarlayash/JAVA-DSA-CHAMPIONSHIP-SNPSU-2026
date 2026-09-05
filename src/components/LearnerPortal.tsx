@@ -295,14 +295,18 @@ export const LearnerPortal: React.FC<Props> = ({
                   </>
                 ) : (
                   <div className="flex items-center justify-between w-full text-xs text-slate-500">
-                    <span className="font-mono text-[11px]">No certificate issued yet</span>
-                    <button
-                      onClick={onOpenAdminAuth}
-                      className="text-[11px] font-bold text-[#1a73e8] hover:underline flex items-center gap-1 cursor-pointer"
-                    >
-                      <Lock className="w-3 h-3 text-amber-500" />
-                      Issue (Admin)
-                    </button>
+                    <span className="font-mono text-[11px] text-slate-400">
+                      Pending Mentorship Release
+                    </span>
+                    {isAdmin && (
+                      <button
+                        onClick={onOpenAdminAuth}
+                        className="text-[11px] font-bold text-[#1a73e8] hover:underline flex items-center gap-1 cursor-pointer"
+                      >
+                        <ShieldCheck className="w-3 h-3 text-[#1a73e8]" />
+                        Issue (Admin)
+                      </button>
+                    )}
                   </div>
                 )}
               </div>

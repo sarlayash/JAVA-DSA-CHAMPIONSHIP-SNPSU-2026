@@ -28,6 +28,8 @@ import {
   Clock,
   CheckCircle,
   Users,
+  Lock,
+  ShieldAlert,
 } from 'lucide-react';
 
 export default function App() {
@@ -58,10 +60,12 @@ export default function App() {
   useEffect(() => {
     reloadData();
 
-    // Check hash for direct QR code scanning
+    // Check hash for direct QR code scanning or secure admin portal launch
     const handleHash = () => {
       const hash = window.location.hash;
-      if (hash.startsWith('#verify')) {
+      if (hash === '#admin') {
+        setIsAuthModalOpen(true);
+      } else if (hash.startsWith('#verify')) {
         const urlParams = new URLSearchParams(hash.replace('#verify?', ''));
         const id = urlParams.get('id');
         if (id) {
@@ -74,6 +78,15 @@ export default function App() {
     handleHash();
     window.addEventListener('hashchange', handleHash);
 
+    // Global administrator hotkey (Ctrl + Shift + A or Cmd + Shift + A)
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'a' || e.key === 'A')) {
+        e.preventDefault();
+        setIsAuthModalOpen(true);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+
     // Real-time synchronization event listener across all tabs & views!
     const handleDataUpdated = () => {
       reloadData();
@@ -82,6 +95,7 @@ export default function App() {
 
     return () => {
       window.removeEventListener('hashchange', handleHash);
+      window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('jdsa_data_updated', handleDataUpdated);
     };
   }, []);
@@ -185,14 +199,30 @@ export default function App() {
         )}
 
         {activeTab === 'ADMIN' && (
-          <AdminDashboard
-            learners={learners}
-            certificates={certificates}
-            teams={teams}
-            rewardsLog={rewardsLog}
-            onRefreshData={reloadData}
-            onViewCertificate={(cert) => setSelectedCertificate(cert)}
-          />
+          isAdmin ? (
+            <AdminDashboard
+              learners={learners}
+              certificates={certificates}
+              teams={teams}
+              rewardsLog={rewardsLog}
+              onRefreshData={reloadData}
+              onViewCertificate={(cert) => setSelectedCertificate(cert)}
+            />
+          ) : (
+            <div className="bg-white border border-slate-200 rounded-2xl p-12 text-center max-w-md mx-auto my-12 shadow-xs">
+              <ShieldAlert className="w-12 h-12 text-slate-400 mx-auto mb-3" />
+              <h3 className="text-lg font-bold text-slate-900">Restricted Administrator Console</h3>
+              <p className="text-xs text-slate-500 mt-1">
+                Access to this section is restricted to authorized championship mentors and administrators.
+              </p>
+              <button
+                onClick={() => setActiveTab('LEARNER')}
+                className="mt-5 px-4 py-2 bg-[#1a73e8] hover:bg-[#1557b0] text-white text-xs font-bold rounded-xl shadow-xs transition cursor-pointer"
+              >
+                Return to Public Portal
+              </button>
+            </div>
+          )
         )}
 
         {activeTab === 'LEADERBOARD' && (
@@ -264,9 +294,21 @@ export default function App() {
           </div>
 
           <div className="pt-6 flex flex-col sm:flex-row items-center justify-between text-[10px] text-slate-500 font-mono uppercase tracking-widest gap-2">
-            <p>
-              &copy; {new Date().getFullYear()} Java DSA Championship &bull; Sapthgiri NPS University
-            </p>
+            <div className="flex items-center gap-2">
+              <p>
+                &copy; {new Date().getFullYear()} Java DSA Championship &bull; Sapthgiri NPS University
+              </p>
+              {!isAdmin && (
+                <button
+                  onClick={() => setIsAuthModalOpen(true)}
+                  title="Administrator Access (Ctrl+Shift+A or #admin)"
+                  className="opacity-25 hover:opacity-100 transition-opacity p-0.5 text-slate-400 hover:text-slate-700 cursor-pointer"
+                  aria-label="Admin Portal Access"
+                >
+                  <Lock className="w-2.5 h-2.5" />
+                </button>
+              )}
+            </div>
             <div className="flex items-center gap-3 normal-case tracking-normal text-xs text-slate-600">
               <span className="flex items-center gap-1.5 text-emerald-700 font-mono text-[11px] font-bold">
                 <CheckCircle className="w-3.5 h-3.5 text-emerald-600" />
