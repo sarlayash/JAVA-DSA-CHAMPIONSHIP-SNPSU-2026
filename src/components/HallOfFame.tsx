@@ -20,11 +20,12 @@ interface Props {
 }
 
 export const HallOfFame: React.FC<Props> = ({ teams, meta, onSelectLearner }) => {
-  // Sort teams by rank or points
-  const sortedTeams = [...teams].sort((a, b) => a.rank - b.rank);
-  const championTeam = sortedTeams[0] || teams[0];
-  const firstRunnerUp = sortedTeams[1] || teams[1];
-  const secondRunnerUp = sortedTeams[2] || teams[2];
+  // Group teams by final rank
+  const rank1Teams = teams.filter((t) => t.rank === 1);
+  const rank2Teams = teams.filter((t) => t.rank === 2);
+  const rank3Teams = teams.filter((t) => t.rank === 3);
+  const rank4Teams = teams.filter((t) => t.rank === 4);
+  const rank5Teams = teams.filter((t) => t.rank === 5);
 
   return (
     <div className="space-y-8 font-sans">
@@ -35,11 +36,11 @@ export const HallOfFame: React.FC<Props> = ({ teams, meta, onSelectLearner }) =>
 
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-[#1a73e8] font-mono text-xs font-bold mb-3">
           <Trophy className="w-4 h-4 text-[#1a73e8]" />
-          PERMANENT CHAMPIONSHIP HALL OF FAME
+          OFFICIAL TOURNAMENT FINAL RESULTS &bull; HALL OF FAME
         </div>
 
         <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-          Championship Legends &amp; Honors
+          Championship Legends &amp; Final Standings
         </h1>
 
         <p className="text-slate-700 font-sans italic text-base sm:text-lg mt-2 max-w-xl mx-auto">
@@ -52,97 +53,198 @@ export const HallOfFame: React.FC<Props> = ({ teams, meta, onSelectLearner }) =>
 
         <div className="mt-4 pt-4 border-t border-slate-100 inline-flex items-center gap-2 text-xs text-slate-600 font-mono">
           <Award className="w-4 h-4 text-[#1a73e8]" />
-          <span>Sapthgiri NPS University &bull; Mentorship By Kapil</span>
+          <span>Sapthgiri NPS University &bull; Mentorship By Kapil &bull; 117 Hours Intensive</span>
         </div>
       </div>
 
-      {/* Podium Showcase: Champion Team & Top Honors (Real-time synced) */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
-        {/* First Runner-Up */}
-        {firstRunnerUp && (
-          <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs relative order-2 md:order-1 flex flex-col justify-between">
-            <div className="text-center">
-              <span className="w-10 h-10 rounded-xl bg-slate-100 text-slate-700 border border-slate-200 inline-flex items-center justify-center font-mono font-bold text-sm mb-3">
-                #2
-              </span>
-              <p className="text-xs font-mono text-slate-500 uppercase tracking-wider font-bold">
-                First Runner-Up Team
-              </p>
-              <h3 className="text-xl font-extrabold text-slate-900 mt-1">{firstRunnerUp.name}</h3>
-              <p className="text-sm font-mono font-bold text-[#1a73e8] mt-1">
-                {firstRunnerUp.totalPoints.toLocaleString()} Points
-              </p>
-              <p className="text-xs text-slate-600 mt-2 font-sans">
-                {firstRunnerUp.award}
-              </p>
-            </div>
-            <div className="mt-4 pt-4 border-t border-slate-100 text-center">
-              <span className="text-[11px] font-mono text-slate-500">
-                {firstRunnerUp.members.join(' • ')}
-              </span>
-            </div>
-          </div>
-        )}
+      {/* Dual Grand Champions Spotlight (Rank 1) */}
+      <div className="space-y-4">
+        <div className="flex items-center gap-2 justify-center">
+          <Trophy className="w-6 h-6 text-amber-500" />
+          <h2 className="text-lg sm:text-xl font-black text-slate-900 uppercase tracking-wide">
+            Rank 1 &bull; Grand Champion Teams
+          </h2>
+          <Trophy className="w-6 h-6 text-amber-500" />
+        </div>
 
-        {/* Grand Champion Team (Higher elevation & gold styling) */}
-        {championTeam && (
-          <div className="bg-white border-2 border-amber-400 rounded-2xl p-6 sm:p-8 shadow-md relative order-1 md:order-2 flex flex-col justify-between -translate-y-2">
-            <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-amber-500 text-white px-3.5 py-0.5 rounded-full font-mono text-xs font-extrabold tracking-wider shadow-xs">
-              CHAMPION TEAM 2026
-            </div>
-            <div className="text-center pt-2">
-              <span className="w-14 h-14 rounded-2xl bg-amber-50 text-amber-600 border border-amber-200 inline-flex items-center justify-center font-mono font-extrabold text-2xl mb-3 shadow-xs">
-                <Trophy className="w-8 h-8 text-amber-500" />
-              </span>
-              <p className="text-xs font-mono text-amber-800 uppercase tracking-widest font-bold">
-                Grand Champion Team
-              </p>
-              <h2 className="text-2xl sm:text-3xl font-black text-slate-900 mt-1">
-                {championTeam.name}
-              </h2>
-              <p className="text-xl font-extrabold text-amber-600 font-mono mt-1">
-                {championTeam.totalPoints.toLocaleString()} Points
-              </p>
-              <p className="text-xs text-slate-600 mt-2 font-sans leading-relaxed">
-                {championTeam.award} &bull; Undisputed tournament victors with supreme algorithmic consistency.
-              </p>
-            </div>
-            <div className="mt-6 pt-4 border-t border-amber-100 text-center">
-              <p className="text-[10px] font-mono text-amber-800 uppercase mb-1 font-bold">
-                Champion Roster ({championTeam.members.length})
-              </p>
-              <span className="text-xs font-mono text-slate-700 font-medium">
-                {championTeam.members.join(' • ')}
-              </span>
-            </div>
-          </div>
-        )}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {rank1Teams.map((team) => (
+            <div
+              key={team.name}
+              className="bg-white border-2 border-amber-400 rounded-2xl p-6 sm:p-7 shadow-md relative flex flex-col justify-between"
+            >
+              <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-amber-500 text-white px-4 py-0.5 rounded-full font-mono text-xs font-black tracking-wider shadow-xs whitespace-nowrap">
+                CHAMPION TEAM 2026 &bull; RANK #1
+              </div>
 
-        {/* Second Runner-Up */}
-        {secondRunnerUp && (
-          <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs relative order-3 flex flex-col justify-between">
-            <div className="text-center">
-              <span className="w-10 h-10 rounded-xl bg-amber-50 text-amber-800 border border-amber-200 inline-flex items-center justify-center font-mono font-bold text-sm mb-3">
-                #3
-              </span>
-              <p className="text-xs font-mono text-slate-500 uppercase tracking-wider font-bold">
-                Second Runner-Up Team
-              </p>
-              <h3 className="text-xl font-extrabold text-slate-900 mt-1">{secondRunnerUp.name}</h3>
-              <p className="text-sm font-mono font-bold text-[#1a73e8] mt-1">
-                {secondRunnerUp.totalPoints.toLocaleString()} Points
-              </p>
-              <p className="text-xs text-slate-600 mt-2 font-sans">
-                {secondRunnerUp.award}
-              </p>
+              <div className="text-center pt-2">
+                <span className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 border border-amber-200 inline-flex items-center justify-center font-mono font-extrabold text-xl mb-2 shadow-xs">
+                  <Trophy className="w-6 h-6 text-amber-500" />
+                </span>
+                <p className="text-xs font-mono text-amber-800 uppercase tracking-widest font-bold">
+                  {team.award}
+                </p>
+                <h3 className="text-2xl sm:text-3xl font-black text-slate-900 mt-1">
+                  {team.name}
+                </h3>
+                <div className="mt-2 inline-block px-4 py-1 rounded-xl bg-amber-50 border border-amber-200">
+                  <span className="text-[10px] font-mono text-amber-700 block uppercase font-bold">
+                    FINAL POINTS
+                  </span>
+                  <span className="text-2xl font-black text-amber-600 font-mono">
+                    {team.totalPoints.toLocaleString()}
+                  </span>
+                </div>
+              </div>
+
+              <div className="mt-6 pt-4 border-t border-amber-100 text-center">
+                <p className="text-[10px] font-mono text-amber-800 uppercase mb-1 font-bold">
+                  Champion Roster ({team.members.length} Members)
+                </p>
+                <div className="flex flex-wrap justify-center gap-1.5 mt-2">
+                  {team.members.map((m) => (
+                    <button
+                      key={m}
+                      onClick={() => onSelectLearner(m)}
+                      className="text-xs font-mono bg-slate-50 hover:bg-amber-100 border border-slate-200 hover:border-amber-300 text-slate-800 px-2.5 py-1 rounded-lg transition cursor-pointer"
+                    >
+                      {m}
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
-            <div className="mt-4 pt-4 border-t border-slate-100 text-center">
-              <span className="text-[11px] font-mono text-slate-500">
-                {secondRunnerUp.members.join(' • ')}
-              </span>
-            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Official Tournament Standings Table (Direct replica of the Championship Scoreboard) */}
+      <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-100 gap-2">
+          <div className="flex items-center gap-2">
+            <Award className="w-5 h-5 text-[#1a73e8]" />
+            <h3 className="text-base font-bold text-slate-900">
+              Official Championship Final Results Board
+            </h3>
           </div>
-        )}
+          <span className="text-xs font-mono bg-blue-50 text-[#1a73e8] px-3 py-1 rounded-full font-bold border border-blue-200">
+            Validated Final Standings &bull; 10 Teams
+          </span>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-sm font-sans">
+            <thead>
+              <tr className="border-b border-slate-200 bg-slate-50/80 text-[11px] font-mono uppercase tracking-wider text-slate-600 font-bold">
+                <th className="py-3 px-4">Team Name</th>
+                <th className="py-3 px-4 text-right">FINAL POINTS</th>
+                <th className="py-3 px-4 text-center">RANK</th>
+                <th className="py-3 px-4">TEAM TITLES</th>
+                <th className="py-3 px-4">Members</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {teams.map((t) => (
+                <tr
+                  key={t.name}
+                  className={`hover:bg-blue-50/40 transition ${
+                    t.rank === 1 ? 'bg-amber-50/30 font-semibold' : ''
+                  }`}
+                >
+                  <td className="py-3.5 px-4 font-bold text-slate-900 flex items-center gap-2">
+                    {t.rank === 1 && <Trophy className="w-4 h-4 text-amber-500" />}
+                    <span>{t.name}</span>
+                  </td>
+                  <td className="py-3.5 px-4 text-right font-mono font-black text-[#1a73e8]">
+                    {t.totalPoints.toLocaleString()}
+                  </td>
+                  <td className="py-3.5 px-4 text-center">
+                    <span
+                      className={`inline-flex items-center justify-center w-7 h-7 rounded-lg font-mono font-bold text-xs ${
+                        t.rank === 1
+                          ? 'bg-amber-100 text-amber-900 border border-amber-300'
+                          : t.rank === 2
+                          ? 'bg-slate-100 text-slate-800 border border-slate-300'
+                          : t.rank === 3
+                          ? 'bg-amber-50 text-amber-800 border border-amber-200'
+                          : 'bg-slate-50 text-slate-600 border border-slate-200'
+                      }`}
+                    >
+                      #{t.rank}
+                    </span>
+                  </td>
+                  <td className="py-3.5 px-4 font-medium text-slate-800">
+                    <span className="px-2.5 py-1 rounded-md bg-slate-100 border border-slate-200 text-xs font-semibold text-slate-700">
+                      {t.award}
+                    </span>
+                  </td>
+                  <td className="py-3.5 px-4 text-xs text-slate-600 font-mono">
+                    {t.members.join(', ')}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Ranks 2 & 3 Honors Showcase */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Rank 2 Teams */}
+        <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs space-y-4">
+          <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+            <div className="flex items-center gap-2">
+              <Medal className="w-5 h-5 text-slate-500" />
+              <h3 className="text-base font-bold text-slate-900">Rank #2 Honorees (3,686,631 Points)</h3>
+            </div>
+            <span className="text-xs font-mono font-bold text-slate-500">Silver Honors</span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {rank2Teams.map((team) => (
+              <div key={team.name} className="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                <p className="text-xs font-mono text-[#1a73e8] uppercase font-bold">
+                  {team.award}
+                </p>
+                <h4 className="text-lg font-black text-slate-900 mt-0.5">{team.name}</h4>
+                <p className="text-xs font-mono font-extrabold text-slate-700 mt-1">
+                  {team.totalPoints.toLocaleString()} Points
+                </p>
+                <p className="text-[11px] text-slate-500 font-mono mt-2">
+                  {team.members.join(' • ')}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Rank 3 Teams */}
+        <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs space-y-4">
+          <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+            <div className="flex items-center gap-2">
+              <Medal className="w-5 h-5 text-amber-700" />
+              <h3 className="text-base font-bold text-slate-900">Rank #3 Honorees (3,676,988 Points)</h3>
+            </div>
+            <span className="text-xs font-mono font-bold text-amber-700">Bronze Honors</span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {rank3Teams.map((team) => (
+              <div key={team.name} className="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                <p className="text-xs font-mono text-amber-700 uppercase font-bold">
+                  {team.award}
+                </p>
+                <h4 className="text-lg font-black text-slate-900 mt-0.5">{team.name}</h4>
+                <p className="text-xs font-mono font-extrabold text-slate-700 mt-1">
+                  {team.totalPoints.toLocaleString()} Points
+                </p>
+                <p className="text-[11px] text-slate-500 font-mono mt-2">
+                  {team.members.join(' • ')}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
       {/* Grid: Stars of the Day & Tongue Twisters */}

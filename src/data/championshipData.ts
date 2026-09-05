@@ -15,13 +15,13 @@ export const CHAMPIONSHIP_META = {
 };
 
 export const TEAMS_DATA: Team[] = [
+  // Rank 1: Dual Champion Teams
   {
     name: "Shenex",
     totalPoints: 3977377,
     finalPoints: 3977377,
-    basePoints: 477377,
     rank: 1,
-    award: "Champion Team",
+    award: "Champion Team - WOMEN",
     demos: 0,
     topTeam: true,
     members: [
@@ -34,12 +34,23 @@ export const TEAMS_DATA: Team[] = [
     ],
   },
   {
+    name: "Byte Force",
+    totalPoints: 3977377,
+    finalPoints: 3977377,
+    rank: 1,
+    award: "Champion Team - MEN",
+    demos: 1,
+    topTeam: true,
+    members: ["AKASH K J", "AKSHAY GUPTHA L", "AKSHAY RAVI B D", "AJAY P K"],
+  },
+
+  // Rank 2
+  {
     name: "TechTok",
     totalPoints: 3686631,
     finalPoints: 3686631,
-    basePoints: 1686631,
     rank: 2,
-    award: "First Runner-Up Team",
+    award: "Best Presentation Style",
     demos: 1,
     members: [
       "ANANYA ANIL",
@@ -50,36 +61,10 @@ export const TEAMS_DATA: Team[] = [
     ],
   },
   {
-    name: "Tattva",
-    totalPoints: 3676988,
-    finalPoints: 3676988,
-    basePoints: 1676988,
-    rank: 3,
-    award: "Second Runner-Up Team",
-    demos: 2,
-    members: [
-      "ALUVALA SAI SHAILU SRI",
-      "AKSHATA SAJJANAR",
-      "AISHWARYA S",
-      "AISHWARYA R",
-    ],
-  },
-  {
-    name: "Triple Bytes",
-    totalPoints: 3524898,
-    finalPoints: 3524898,
-    basePoints: 1024898,
-    rank: 4,
-    award: "Best Innovation Team",
-    demos: 1,
-    members: ["AMRITHA D E", "AMSHU S", "ANANYA K"],
-  },
-  {
     name: "Mad Apex",
-    totalPoints: 3417722,
-    finalPoints: 3417722,
-    basePoints: 1917722,
-    rank: 5,
+    totalPoints: 3686631,
+    finalPoints: 3686631,
+    rank: 2,
     award: "Best Team Collaboration",
     demos: 0,
     members: [
@@ -91,32 +76,47 @@ export const TEAMS_DATA: Team[] = [
       "AKASH SHIVANAND SAVALAGI",
     ],
   },
+
+  // Rank 3
   {
-    name: "Byte Force",
-    totalPoints: 3298093,
-    finalPoints: 3298093,
-    basePoints: 1798093,
-    rank: 6,
-    award: "Best Team Collaboration",
+    name: "Triple Bytes",
+    totalPoints: 3676988,
+    finalPoints: 3676988,
+    rank: 3,
+    award: "Best Innovation Team",
     demos: 1,
-    members: ["AKASH K J", "AKSHAY GUPTHA L", "AKSHAY RAVI B D", "AJAY P K"],
+    members: ["AMRITHA D E", "AMSHU S", "ANANYA K"],
   },
+  {
+    name: "Tattva",
+    totalPoints: 3676988,
+    finalPoints: 3676988,
+    rank: 3,
+    award: "Best Creativity Team",
+    demos: 2,
+    members: [
+      "ALUVALA SAI SHAILU SRI",
+      "AKSHATA SAJJANAR",
+      "AISHWARYA S",
+      "AISHWARYA R",
+    ],
+  },
+
+  // Rank 4
   {
     name: "Veltrion",
     totalPoints: 1731602,
     finalPoints: 1731602,
-    basePoints: 231602,
-    rank: 7,
+    rank: 4,
     award: "Best Problem Statement",
     demos: 0,
     members: ["AKSHAY N", "AKASH N", "AKASH R"],
   },
   {
     name: "Toxicos",
-    totalPoints: 973878,
-    finalPoints: 973878,
-    basePoints: 673878,
-    rank: 8,
+    totalPoints: 1731602,
+    finalPoints: 1731602,
+    rank: 4,
     award: "Best Technical Solution",
     demos: 0,
     members: [
@@ -128,12 +128,13 @@ export const TEAMS_DATA: Team[] = [
       "ANANYA AG",
     ],
   },
+
+  // Rank 5
   {
     name: "Backbenchers",
     totalPoints: 694900,
     finalPoints: 694900,
-    basePoints: 194900,
-    rank: 9,
+    rank: 5,
     award: "People's Choice Team",
     demos: 1,
     members: [
@@ -147,10 +148,9 @@ export const TEAMS_DATA: Team[] = [
   },
   {
     name: "Brahmastra",
-    totalPoints: 631033,
-    finalPoints: 631033,
-    basePoints: 331033,
-    rank: 10,
+    totalPoints: 694900,
+    finalPoints: 694900,
+    rank: 5,
     award: "Best Industry Impact",
     demos: 0,
     bottomTeam: true,
@@ -213,7 +213,54 @@ export const LEARNERS_DATA: Learner[] = [
     medals: ["Merit Medal"],
   },
 
-  // Position 2: TechTok (Rank 2 - First Runner-Up Team)
+  // Position 2: Byte Force (Rank 1 - Champion Team - MEN)
+  {
+    id: "learner-byte-1",
+    name: "AKASH K J",
+    team: "Byte Force",
+    posts: 21,
+    posters: 15,
+    videos: 6,
+    titles: ["Java DSA Vice Champion", "DSA Pattern Master"],
+    badges: ["Top Performer", "Silver Badge", "Smart Solver"],
+    medals: ["Silver Medal", "Excellence Medal"],
+  },
+  {
+    id: "learner-byte-2",
+    name: "AKSHAY GUPTHA L",
+    team: "Byte Force",
+    posts: 20,
+    posters: 14,
+    videos: 2,
+    titles: ["Debugging Champion"],
+    badges: ["Precision Coder", "Silver Badge"],
+    medals: ["Silver Medal"],
+  },
+  {
+    id: "learner-byte-3",
+    name: "AKSHAY RAVI B D",
+    team: "Byte Force",
+    posts: 21,
+    posters: 13,
+    videos: 4,
+    titles: ["Industry Ready Engineer"],
+    badges: ["Excellence Badge", "Silver Badge"],
+    medals: ["Silver Medal"],
+  },
+  {
+    id: "learner-byte-4",
+    name: "AJAY P K",
+    team: "Byte Force",
+    posts: 13,
+    posters: 7,
+    videos: 2,
+    isTongueTwisterChampion: true,
+    titles: ["Best Team Player"],
+    badges: ["Fast Finisher"],
+    medals: ["Silver Medal"],
+  },
+
+  // Position 3: TechTok (Rank 2 - Best Presentation Style)
   {
     id: "learner-tech-1",
     name: "ANANYA DINAKARA SHETTY",
@@ -275,86 +322,7 @@ export const LEARNERS_DATA: Learner[] = [
     medals: ["Bronze Medal"],
   },
 
-  // Position 3: Tattva (Rank 3 - Second Runner-Up Team)
-  {
-    id: "learner-tat-1",
-    name: "ALUVALA SAI SHAILU SRI",
-    team: "Tattva",
-    posts: 13,
-    posters: 6,
-    titles: ["Team Leader of the Championship"],
-    badges: ["Top Performer", "Excellence Badge"],
-    medals: ["Merit Medal"],
-  },
-  {
-    id: "learner-tat-2",
-    name: "AKSHATA SAJJANAR",
-    team: "Tattva",
-    posts: 26,
-    posters: 22,
-    titles: ["Platinum Performer", "Never Give Up Award"],
-    badges: ["Precision Coder"],
-    medals: ["Merit Medal"],
-  },
-  {
-    id: "learner-tat-3",
-    name: "AISHWARYA S",
-    team: "Tattva",
-    posts: 22,
-    posters: 16,
-    titles: ["Professional Branding Champion"],
-    badges: ["Growth Badge"],
-    medals: ["Merit Medal"],
-  },
-  {
-    id: "learner-tat-4",
-    name: "AISHWARYA R",
-    team: "Tattva",
-    posts: 20,
-    posters: 10,
-    isTongueTwisterChampion: true,
-    titles: ["Technical Content Creator"],
-    badges: ["Smart Solver"],
-    medals: ["Merit Medal"],
-  },
-
-  // Position 4: Triple Bytes (Rank 4 - Best Innovation Team)
-  {
-    id: "learner-trip-1",
-    name: "AMSHU S",
-    team: "Triple Bytes",
-    posts: 61,
-    posters: 44,
-    videos: 5,
-    isTongueTwisterChampion: true,
-    titles: ["Gold Performer", "Best Championship Journey"],
-    badges: ["Top Performer", "Gold Badge", "Fast Finisher"],
-    medals: ["Excellence Medal", "Merit Medal"],
-  },
-  {
-    id: "learner-trip-2",
-    name: "AMRITHA D E",
-    team: "Triple Bytes",
-    posts: 33,
-    posters: 30,
-    videos: 3,
-    titles: ["Silver Performer", "Peer Mentor Award"],
-    badges: ["Smart Solver", "Silver Badge"],
-    medals: ["Merit Medal"],
-  },
-  {
-    id: "learner-trip-3",
-    name: "ANANYA K",
-    team: "Triple Bytes",
-    posts: 24,
-    posters: 2,
-    videos: 1,
-    titles: ["Bronze Performer"],
-    badges: ["Growth Badge"],
-    medals: ["Merit Medal"],
-  },
-
-  // Position 5: Mad Apex (Rank 5 - Best Team Collaboration)
+  // Position 4: Mad Apex (Rank 2 - Best Team Collaboration)
   {
     id: "learner-mad-1",
     name: "AKSHAY KRISHNA H R",
@@ -422,51 +390,83 @@ export const LEARNERS_DATA: Learner[] = [
     medals: ["Gold Medal"],
   },
 
-  // Position 6: Byte Force (Rank 6 - Best Team Collaboration)
+  // Position 5: Triple Bytes (Rank 3 - Best Innovation Team)
   {
-    id: "learner-byte-1",
-    name: "AKASH K J",
-    team: "Byte Force",
-    posts: 21,
-    posters: 15,
-    videos: 6,
-    titles: ["Java DSA Vice Champion", "DSA Pattern Master"],
-    badges: ["Top Performer", "Silver Badge", "Smart Solver"],
-    medals: ["Silver Medal", "Excellence Medal"],
-  },
-  {
-    id: "learner-byte-2",
-    name: "AKSHAY GUPTHA L",
-    team: "Byte Force",
-    posts: 20,
-    posters: 14,
-    videos: 2,
-    titles: ["Debugging Champion"],
-    badges: ["Precision Coder", "Silver Badge"],
-    medals: ["Silver Medal"],
-  },
-  {
-    id: "learner-byte-3",
-    name: "AKSHAY RAVI B D",
-    team: "Byte Force",
-    posts: 21,
-    posters: 13,
-    videos: 4,
-    titles: ["Industry Ready Engineer"],
-    badges: ["Excellence Badge", "Silver Badge"],
-    medals: ["Silver Medal"],
-  },
-  {
-    id: "learner-byte-4",
-    name: "AJAY P K",
-    team: "Byte Force",
-    posts: 13,
-    posters: 7,
-    videos: 2,
+    id: "learner-trip-1",
+    name: "AMSHU S",
+    team: "Triple Bytes",
+    posts: 61,
+    posters: 44,
+    videos: 5,
     isTongueTwisterChampion: true,
-    titles: ["Best Team Player"],
-    badges: ["Fast Finisher"],
-    medals: ["Silver Medal"],
+    titles: ["Gold Performer", "Best Championship Journey"],
+    badges: ["Top Performer", "Gold Badge", "Fast Finisher"],
+    medals: ["Excellence Medal", "Merit Medal"],
+  },
+  {
+    id: "learner-trip-2",
+    name: "AMRITHA D E",
+    team: "Triple Bytes",
+    posts: 33,
+    posters: 30,
+    videos: 3,
+    titles: ["Silver Performer", "Peer Mentor Award"],
+    badges: ["Smart Solver", "Silver Badge"],
+    medals: ["Merit Medal"],
+  },
+  {
+    id: "learner-trip-3",
+    name: "ANANYA K",
+    team: "Triple Bytes",
+    posts: 24,
+    posters: 2,
+    videos: 1,
+    titles: ["Bronze Performer"],
+    badges: ["Growth Badge"],
+    medals: ["Merit Medal"],
+  },
+
+  // Position 6: Tattva (Rank 3 - Best Creativity Team)
+  {
+    id: "learner-tat-1",
+    name: "ALUVALA SAI SHAILU SRI",
+    team: "Tattva",
+    posts: 13,
+    posters: 6,
+    titles: ["Team Leader of the Championship"],
+    badges: ["Top Performer", "Excellence Badge"],
+    medals: ["Merit Medal"],
+  },
+  {
+    id: "learner-tat-2",
+    name: "AKSHATA SAJJANAR",
+    team: "Tattva",
+    posts: 26,
+    posters: 22,
+    titles: ["Platinum Performer", "Never Give Up Award"],
+    badges: ["Precision Coder"],
+    medals: ["Merit Medal"],
+  },
+  {
+    id: "learner-tat-3",
+    name: "AISHWARYA S",
+    team: "Tattva",
+    posts: 22,
+    posters: 16,
+    titles: ["Professional Branding Champion"],
+    badges: ["Growth Badge"],
+    medals: ["Merit Medal"],
+  },
+  {
+    id: "learner-tat-4",
+    name: "AISHWARYA R",
+    team: "Tattva",
+    posts: 20,
+    posters: 10,
+    isTongueTwisterChampion: true,
+    titles: ["Technical Content Creator"],
+    badges: ["Smart Solver"],
+    medals: ["Merit Medal"],
   },
 
   // Position 7: Veltrion (Rank 7 - Best Problem Statement)
@@ -806,11 +806,15 @@ export const RECOGNITION_FRAMEWORK = {
 
 // Initial Seed Certificates for Learners so the portal is instantly live and rich with Fortune 500 standards
 export const INITIAL_CERTIFICATES: Certificate[] = LEARNERS_DATA.map((learner, idx) => {
-  const isChampionTeam = learner.team === "Shenex";
-  const isRunnerUpTeam = learner.team === "TechTok" || learner.team === "Tattva";
+  const isChampionTeam = learner.team === "Shenex" || learner.team === "Byte Force";
+  const isExcellenceTeam =
+    learner.team === "TechTok" ||
+    learner.team === "Mad Apex" ||
+    learner.team === "Triple Bytes" ||
+    learner.team === "Tattva";
   const certType = isChampionTeam
     ? "Championship Winner Certificate"
-    : isRunnerUpTeam || (learner.points && learner.points >= 1000)
+    : isExcellenceTeam || (learner.points && learner.points >= 1000)
     ? "Certificate of Excellence"
     : learner.titles && learner.titles.length > 0
     ? "Certificate of Merit"
@@ -823,6 +827,7 @@ export const INITIAL_CERTIFICATES: Certificate[] = LEARNERS_DATA.map((learner, i
 
   const hexCode = (1000 + idx).toString(16).toUpperCase().padStart(4, "0");
   const certId = `SNPSU-JDSA-2026-${hexCode}`;
+  const teamInfo = TEAMS_DATA.find((t) => t.name === learner.team);
 
   return {
     id: certId,
@@ -840,6 +845,7 @@ export const INITIAL_CERTIFICATES: Certificate[] = LEARNERS_DATA.map((learner, i
       institution: CHAMPIONSHIP_META.institution,
       mentor: CHAMPIONSHIP_META.mentorship,
       motto: CHAMPIONSHIP_META.motto,
+      teamAward: teamInfo?.award || "",
     },
   };
 });

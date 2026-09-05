@@ -228,7 +228,7 @@ export function logoutAdmin(): void {
 }
 
 const STORAGE_DATA_VERSION_KEY = 'snpsu_jdsa_data_version_2026';
-const CURRENT_DATA_VERSION = 'v2_final_scores_2026';
+const CURRENT_DATA_VERSION = 'v3_official_final_standings_2026';
 
 function ensureLatestDataLoaded(): void {
   try {
